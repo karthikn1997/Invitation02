@@ -173,7 +173,7 @@ export default function OurStory() {
             ))}
           </figure>
 
-          <div className="story__body">
+          {/* <div className="story__body">
             <div ref={textRef} className="story__text" data-inview={textIn}>
               <span className="story__bell-wrap reveal" aria-hidden="true">
                 <span className="story__ripple" />
@@ -198,7 +198,7 @@ export default function OurStory() {
                 <path d="m80 7 3.5 4.5L80 16l-3.5-4.5L80 7Z" className="story__flourish-gem" />
               </svg>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </section>

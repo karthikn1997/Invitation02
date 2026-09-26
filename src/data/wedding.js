@@ -44,7 +44,7 @@ export const venue = {
     { icon: 'car', text: 'Parking available within the mandapam premises' },
     { icon: 'leaf', text: 'Traditional vegetarian banana-leaf lunch after the muhurtham' },
   ],
-  photo: { src: "public/images/mahal.webp", alt: 'The wedding venue' },
+  photo: { src: "/images/mahal.webp", alt: 'The wedding venue' },
 };
 
 // Section 2 — Welcome & wedding details
@@ -148,7 +148,7 @@ export const family = {
       parents: 'Thiru. R. Ramasamy & Tmt. R. Kamala',
       grandRelation: 'Granddaughter of',
       grandparents: 'Thiru. K. Rangasamy & Tmt. R. Saraswathi',
-      photo: { src: "public/images/bride-1.jpg", alt: "Meenakshi's family" },
+      photo: { src: "/images/bride-1.jpg", alt: "Meenakshi's family" },
     },
     {
       role: 'The Groom',
@@ -157,7 +157,7 @@ export const family = {
       parents: 'Thiru. S. Krishnan & Tmt. K. Vasantha',
       grandRelation: 'Grandson of',
       grandparents: 'Thiru. V. Subramaniam & Tmt. S. Meenambal',
-      photo: { src: "public/images/groom-1.jpg", alt: "Arjun's family" },
+      photo: { src: "/images/groom-1.jpg", alt: "Arjun's family" },
     },
   ],
   note: 'Together with our families, we request the honour of your presence and blessings as we begin our life together.',
