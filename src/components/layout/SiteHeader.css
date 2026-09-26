@@ -1,5 +1,6 @@
+/* Sits over the top of the hero and scrolls away with the page */
 .site-header {
-  position: fixed;
+  position: absolute;
   inset: 0 0 auto;
   z-index: 30;
   display: flex;
@@ -12,34 +13,6 @@
 
 .site-header > * {
   pointer-events: auto;
-}
-
-/* Frosted ivory bar once the header sits over paper sections */
-.site-header::before {
-  content: '';
-  position: absolute;
-  inset: 0 0 -12px;
-  z-index: -1;
-  background: rgba(248, 240, 225, 0.86);
-  -webkit-backdrop-filter: blur(10px);
-  backdrop-filter: blur(10px);
-  box-shadow: 0 1px 0 rgba(164, 128, 63, 0.28);
-  opacity: 0;
-  transition: opacity 0.5s var(--ease-soft);
-}
-
-.site-header[data-solid='true']::before {
-  opacity: 1;
-}
-
-.site-header[data-solid='true'] .site-header__title,
-.site-header[data-solid='true'] .menu-toggle__label {
-  color: var(--maroon);
-  text-shadow: none;
-}
-
-.site-header[data-solid='true'] .site-header__title span {
-  color: var(--gold-deep);
 }
 
 /* Monogram */

@@ -55,6 +55,22 @@
 .hero-bg__img {
   object-fit: cover;
   object-position: 50% 60%;
+  /* Opening reveal: starts close, soft and sunlit, then settles into focus.
+     "backwards" fill holds the start state until it runs (it is paused while
+     the intro doors are closed) and drops the filter once finished. */
+  animation: hero-reveal 3.2s cubic-bezier(0.22, 0.61, 0.36, 1) 0.1s backwards;
+}
+
+/* Warm light flooding in through the doorway, fading as the image settles */
+.hero-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: radial-gradient(75% 65% at 50% 45%, rgba(255, 244, 220, 0.95), rgba(255, 220, 160, 0.5) 45%, rgba(255, 200, 130, 0.12) 80%);
+  opacity: 0;
+  pointer-events: none;
+  animation: hero-light 2.6s ease-out 0.1s backwards;
 }
 
 .hero-bg__wash,
@@ -339,9 +355,9 @@
 }
 
 .invite__eyebrow { animation-delay: 0.75s; }
-.invite__name--bride { animation-delay: 1s; }
+.invite__name--first { animation-delay: 1s; }
 .invite__amp { animation-delay: 1.25s; }
-.invite__name--groom { animation-delay: 1.45s; }
+.invite__name--second { animation-delay: 1.45s; }
 .invite__date { animation-delay: 1.75s; }
 .invite__cta { animation: soft-reveal 1.3s var(--ease-out) 1.95s forwards; }
 
@@ -513,6 +529,22 @@
 /* ==========================================================================
    Keyframes
    ========================================================================== */
+
+@keyframes hero-reveal {
+  from {
+    transform: scale(1.22) translateY(2.5%);
+    filter: blur(8px) brightness(1.35) saturate(0.8);
+  }
+  to {
+    transform: none;
+    filter: none;
+  }
+}
+
+@keyframes hero-light {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
 
 @keyframes hero-drift {
   from { transform: scale(1); }

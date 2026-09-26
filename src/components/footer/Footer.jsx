@@ -55,7 +55,7 @@ export default function Footer() {
   const topRef = useRef(null);
   useScrollProgress(topRef, active);
 
-  const names = `${wedding.bride} & ${wedding.groom}`;
+  const [first, second] = wedding.couple;
 
   return (
     <footer ref={footerRef} className="site-footer" data-active={active} data-inview={seen}>
@@ -83,12 +83,12 @@ export default function Footer() {
           <p className="site-footer__blessing" lang="ta">
             {footer.blessingTa}
           </p>
-          <p className="site-footer__names" aria-label={names}>
-            <Letters text={wedding.bride} start={0} />
-            <span className="site-footer__amp" style={{ '--i': wedding.bride.length }} aria-hidden="true">
+          <p className="site-footer__names" aria-label={wedding.names}>
+            <Letters text={first} start={0} />
+            <span className="site-footer__amp" style={{ '--i': first.length }} aria-hidden="true">
               &amp;
             </span>
-            <Letters text={wedding.groom} start={wedding.bride.length + 1} />
+            <Letters text={second} start={first.length + 1} />
           </p>
           <LotusDivider className="site-footer__divider" />
           <p className="site-footer__date">

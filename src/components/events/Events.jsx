@@ -3,7 +3,7 @@ import Reveal from '../common/Reveal.jsx';
 import { GopuramLineArt, KolamMotif } from '../ornaments/LineArt.jsx';
 import { Icon } from '../ornaments/icons.jsx';
 import { useInView } from '../../hooks/useInView.js';
-import { events, venue } from '../../data/wedding.js';
+import { events, venue, wedding } from '../../data/wedding.js';
 import './Events.css';
 
 const toCalendarStamp = (iso) => new Date(iso).toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
@@ -11,7 +11,7 @@ const toCalendarStamp = (iso) => new Date(iso).toISOString().replace(/[-:]/g, ''
 function calendarUrl(item) {
   const params = new URLSearchParams({
     action: 'TEMPLATE',
-    text: `${item.name} · Meenakshi & Arjun`,
+    text: `${item.name} · ${wedding.names}`,
     dates: `${toCalendarStamp(item.start)}/${toCalendarStamp(item.end)}`,
     details: item.text,
     location: `${venue.name}, ${venue.city}`,

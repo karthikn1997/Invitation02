@@ -16,9 +16,9 @@ export default function InvitationCard() {
       </p>
 
       <h1 id="hero-title" className="invite__names">
-        <span className="invite__name invite__name--bride">{wedding.bride}</span>
+        <span className="invite__name invite__name--first">{wedding.couple[0]}</span>
         <span className="invite__amp">&amp;</span>
-        <span className="invite__name invite__name--groom">{wedding.groom}</span>
+        <span className="invite__name invite__name--second">{wedding.couple[1]}</span>
       </h1>
 
       <p className="invite__date">

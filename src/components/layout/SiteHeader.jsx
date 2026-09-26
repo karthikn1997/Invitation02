@@ -7,30 +7,7 @@ export default function SiteHeader() {
   const toggleRef = useRef(null);
   const firstLinkRef = useRef(null);
 
-  const [solid, setSolid] = useState(false);
-
   const close = useCallback(() => setOpen(false), []);
-
-  // Over the hero photo the header floats; past it (on paper sections) it
-  // gains a light frosted bar so the text stays legible.
-  useEffect(() => {
-    let frame = 0;
-    const update = () => {
-      frame = 0;
-      setSolid(window.scrollY > window.innerHeight - 90);
-    };
-    const onScroll = () => {
-      if (!frame) frame = requestAnimationFrame(update);
-    };
-    update();
-    window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', onScroll);
-    return () => {
-      cancelAnimationFrame(frame);
-      window.removeEventListener('scroll', onScroll);
-      window.removeEventListener('resize', onScroll);
-    };
-  }, []);
 
   useEffect(() => {
     if (!open) return undefined;
@@ -54,17 +31,17 @@ export default function SiteHeader() {
 
   return (
     <>
-      <header className="site-header" data-solid={solid && !open}>
-        <a className="monogram" href="#top" aria-label={`${wedding.bride} and ${wedding.groom}, back to top`}>
+      <header className="site-header">
+        <a className="monogram" href="#top" aria-label={`${wedding.couple.join(' and ')}, back to top`}>
           <span className="monogram__ring" aria-hidden="true">
-            <span>{wedding.monogram.bride}</span>
+            <span>{wedding.monogram[0]}</span>
             <span className="monogram__amp">&amp;</span>
-            <span>{wedding.monogram.groom}</span>
+            <span>{wedding.monogram[1]}</span>
           </span>
         </a>
 
         <p className="site-header__title" aria-hidden="true">
-          {wedding.bride} <span>&amp;</span> {wedding.groom}
+          {wedding.couple[0]} <span>&amp;</span> {wedding.couple[1]}
         </p>
 
         <button

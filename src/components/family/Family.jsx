@@ -96,7 +96,7 @@ function FamilyCard({ side, which, delay }) {
 }
 
 export default function Family() {
-  const [bride, groom] = family.sides;
+  const [left, right] = family.sides;
   const [sectionRef, active] = useInView({ threshold: 0, rootMargin: '0px', once: false });
   const [closingRef, closingIn] = useInView({ threshold: 0.4 });
   const words = family.note.split(' ');
@@ -127,7 +127,7 @@ export default function Family() {
         <SectionHeading id="family-title" eyebrow={family.eyebrow} title={family.title} />
 
         <div className="family__grid">
-          <FamilyCard side={bride} which="bride" delay={0} />
+          <FamilyCard side={left} which="left" delay={0} />
           <Reveal className="family__union" delay={0.2} aria-hidden="true">
             <span className="family__link family__link--a" />
             <span className="family__amp">
@@ -137,7 +137,7 @@ export default function Family() {
             </span>
             <span className="family__link family__link--b" />
           </Reveal>
-          <FamilyCard side={groom} which="groom" delay={0.15} />
+          <FamilyCard side={right} which="right" delay={0.15} />
         </div>
 
         <div ref={closingRef} className="family__closing" data-inview={closingIn}>

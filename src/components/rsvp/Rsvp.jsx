@@ -30,7 +30,7 @@ const BURST = Array.from({ length: 18 }, (_, i) => ({
 }));
 
 function buildMessage(form) {
-  const lines = [`RSVP · ${wedding.bride} & ${wedding.groom}`, '', `Name: ${form.name}`];
+  const lines = [`RSVP · ${wedding.names}`, '', `Name: ${form.name}`];
   if (form.phone) lines.push(`Phone: ${form.phone}`);
   if (form.attending === 'yes') {
     lines.push('Response: Joyfully accepts', `Guests: ${form.guests}`, `Attending: ${form.events.join(', ') || '—'}`);
@@ -66,7 +66,9 @@ function WaxSeal({ className }) {
       <circle r="27" fill="none" stroke="rgba(255, 220, 190, 0.35)" strokeWidth="1" />
       <circle r="23.5" fill="none" stroke="rgba(0, 0, 0, 0.25)" strokeWidth="1" />
       <text className="rsvp__seal-text" y="7" textAnchor="middle">
-        M<tspan className="rsvp__seal-amp">&amp;</tspan>A
+        {wedding.monogram[0]}
+        <tspan className="rsvp__seal-amp">&amp;</tspan>
+        {wedding.monogram[1]}
       </text>
     </svg>
   );

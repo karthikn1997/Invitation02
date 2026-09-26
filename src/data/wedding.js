@@ -4,10 +4,17 @@
 // Photos: set `src` to a path under /public (e.g. '/images/venue.jpg').
 // While `src` is null, an elegant "photo coming soon" frame is shown instead.
 
+const BRIDE = 'Priya';
+const GROOM = 'Naveen';
+// Order the names appear in across the site ("Naveen weds Priya").
+const COUPLE = [GROOM, BRIDE];
+
 export const wedding = {
-  bride: 'Meenakshi',
-  groom: 'Arjun',
-  monogram: { bride: 'M', groom: 'A' },
+  bride: BRIDE,
+  groom: GROOM,
+  couple: COUPLE,
+  names: COUPLE.join(' & '),
+  monogram: COUPLE.map((name) => name[0]),
   invitationTa: 'திருமண அழைப்பிதழ்', // "Wedding invitation"
   date: {
     iso: '2026-12-17',
@@ -15,7 +22,7 @@ export const wedding = {
   },
   // Start of the muhurtham in India Standard Time; drives the countdown.
   muhurthamStart: '2026-12-17T09:30:00+05:30',
-  hashtag: '#MeenakshiWedsArjun',
+  hashtag: '#NaveenWedsPriya',
   cta: { label: 'Our Celebration', href: '#celebration' },
   music: {
     // Drop a track at public/audio/wedding-theme.mp3 (e.g. a soft nadaswaram piece).
@@ -81,7 +88,7 @@ export const story = {
   body:
     'From the first hello to this beautiful day, our journey has been filled with laughter, memories, family and countless little moments that brought us closer.',
   photo: {
-    alt: 'Meenakshi in a maroon silk saree and Arjun in a white veshti, smiling at each other on flower-lined temple steps at sunrise.',
+    alt: 'Priya in a maroon silk saree and Naveen in a white veshti, smiling at each other on flower-lined temple steps at sunrise.',
   },
 };
 
@@ -142,26 +149,26 @@ export const family = {
   title: 'Our Families',
   sides: [
     {
-      role: 'The Bride',
-      name: 'Meenakshi',
-      relation: 'Beloved daughter of',
-      parents: 'Thiru. R. Ramasamy & Tmt. R. Kamala',
-      grandRelation: 'Granddaughter of',
-      grandparents: 'Thiru. K. Rangasamy & Tmt. R. Saraswathi',
-      photo: { src: "/images/bride-1.jpg", alt: "Meenakshi's family" },
-    },
-    {
       role: 'The Groom',
-      name: 'Arjun',
+      name: GROOM,
       relation: 'Beloved son of',
       parents: 'Thiru. S. Krishnan & Tmt. K. Vasantha',
       grandRelation: 'Grandson of',
       grandparents: 'Thiru. V. Subramaniam & Tmt. S. Meenambal',
-      photo: { src: "/images/groom-1.jpg", alt: "Arjun's family" },
+      photo: { src: '/images/groom-1.jpg', alt: `${GROOM}'s family` },
+    },
+    {
+      role: 'The Bride',
+      name: BRIDE,
+      relation: 'Beloved daughter of',
+      parents: 'Thiru. R. Ramasamy & Tmt. R. Kamala',
+      grandRelation: 'Granddaughter of',
+      grandparents: 'Thiru. K. Rangasamy & Tmt. R. Saraswathi',
+      photo: { src: '/images/bride-1.jpg', alt: `${BRIDE}'s family` },
     },
   ],
   note: 'Together with our families, we request the honour of your presence and blessings as we begin our life together.',
-  signature: 'With love, the Ramasamy & Krishnan families',
+  signature: 'With love, the Krishnan & Ramasamy families',
   // Softly blended photograph behind the whole section. A family group
   // photo works beautifully here once you have one.
   backdrop: { src: '/images/story-couple-902.webp' },

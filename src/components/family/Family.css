@@ -157,8 +157,8 @@
 }
 
 /* The families approach from opposite sides */
-.family-card--bride { translate: -80px 0; }
-.family-card--groom { translate: 80px 0; }
+.family-card--left { translate: -80px 0; }
+.family-card--right { translate: 80px 0; }
 
 .family-card__portrait {
   position: relative;
@@ -202,7 +202,7 @@
   pointer-events: none;
 }
 
-.family-card--groom .family-card__ring {
+.family-card--right .family-card__ring {
   transform: scaleY(-1); /* draws the other way round */
 }
 
@@ -232,7 +232,7 @@
   animation-play-state: paused;
 }
 
-.family-card--groom .family-card__garland {
+.family-card--right .family-card__garland {
   animation-direction: reverse;
 }
 
