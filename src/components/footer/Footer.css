@@ -1,0 +1,462 @@
+/* ==========================================================================
+   Footer — farewell under a night sky, lamps being lit.
+   State hooks: .site-footer[data-active] while on screen (ambient loops),
+   .site-footer[data-inview] once the names block has been seen.
+   ========================================================================== */
+
+.site-footer {
+  position: relative;
+  overflow: hidden;
+  color: var(--cream);
+  background:
+    radial-gradient(70% 60% at 50% 0%, rgba(201, 162, 94, 0.14), transparent 70%),
+    radial-gradient(50% 40% at 50% 100%, rgba(120, 40, 20, 0.18), transparent 70%),
+    var(--ink);
+}
+
+.site-footer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  border-top: 1px solid rgba(223, 195, 140, 0.5);
+  border-bottom: 1px solid rgba(223, 195, 140, 0.2);
+}
+
+.site-footer[data-active='true'] :is(
+    .site-footer__star,
+    .site-footer__shooting,
+    .site-footer__letter,
+    .site-footer__amp,
+    .site-footer__top-arrow,
+    .diya__flame,
+    .diya__glow
+  ) {
+  animation-play-state: running;
+}
+
+/* ---------- Night sky ---------- */
+
+.site-footer__sky {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.site-footer__star {
+  position: absolute;
+  border-radius: 50%;
+  background: #fff6de;
+  box-shadow: 0 0 6px 1px rgba(255, 230, 180, 0.6);
+  opacity: 0.2;
+  animation: footer-twinkle 3.6s ease-in-out var(--delay) infinite alternate;
+  animation-play-state: paused;
+}
+
+.site-footer__shooting {
+  position: absolute;
+  top: 16%;
+  left: -12%;
+  width: 130px;
+  height: 1px;
+  border-radius: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 240, 210, 0.95));
+  rotate: 16deg;
+  opacity: 0;
+  animation: footer-shoot 11s linear 3s infinite;
+  animation-play-state: paused;
+}
+
+.site-footer__shooting--late {
+  top: 6%;
+  left: 28%;
+  width: 90px;
+  animation-delay: 8.5s;
+}
+
+/* ---------- Lamps lit from the centre outward ---------- */
+
+.site-footer__lamps {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  gap: clamp(26px, 6vw, 72px);
+  padding-top: clamp(44px, 5vw, 60px);
+}
+
+.site-footer__lamp {
+  position: relative;
+  width: clamp(24px, 3vw, 32px);
+}
+
+.site-footer__lamp .diya__flame,
+.site-footer__lamp .diya__glow {
+  scale: 0;
+  transition: scale 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) calc(0.3s + var(--order) * 0.25s);
+}
+
+.site-footer[data-inview='true'] .site-footer__lamp :is(.diya__flame, .diya__glow) {
+  scale: 1;
+}
+
+@media (max-width: 599px) {
+  .site-footer__lamp--edge {
+    display: none;
+  }
+}
+
+/* ---------- Main block ---------- */
+
+.site-footer__inner {
+  position: relative;
+  z-index: 1;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: clamp(40px, 5vw, 64px) var(--gutter) calc(var(--safe-bottom) + 28px);
+}
+
+.site-footer__main {
+  text-align: center;
+}
+
+.site-footer__blessing {
+  font-family: var(--font-tamil);
+  font-size: 0.95rem;
+  color: var(--gold-soft);
+  opacity: 0;
+  transition:
+    opacity 1.2s ease 0.4s,
+    text-shadow 1.6s ease 0.4s;
+}
+
+.site-footer[data-inview='true'] .site-footer__blessing {
+  opacity: 1;
+  text-shadow: 0 0 18px rgba(255, 210, 140, 0.45);
+}
+
+/* Names rise letter by letter; then a golden glint travels through them */
+.site-footer__names {
+  margin-top: 10px;
+  font-family: var(--font-display);
+  font-size: clamp(2.6rem, 9vw, 4.6rem);
+  font-weight: 500;
+  line-height: 1.05;
+  color: var(--ivory);
+}
+
+.site-footer__letter,
+.site-footer__amp {
+  display: inline-block;
+  opacity: 0;
+  translate: 0 0.45em;
+  filter: blur(6px);
+  transition:
+    opacity 0.9s var(--ease-out) calc(0.8s + var(--i) * 0.05s),
+    translate 0.9s var(--ease-out) calc(0.8s + var(--i) * 0.05s),
+    filter 0.9s var(--ease-out) calc(0.8s + var(--i) * 0.05s);
+  animation: letter-glint 7s ease-in-out calc(3.2s + var(--i) * 0.07s) infinite;
+  animation-play-state: paused;
+}
+
+.site-footer__amp {
+  margin-inline: 0.22em;
+  font-size: 0.6em;
+  font-style: italic;
+  font-weight: 400;
+  color: var(--gold-soft);
+}
+
+.site-footer[data-inview='true'] :is(.site-footer__letter, .site-footer__amp) {
+  opacity: 1;
+  translate: 0 0;
+  filter: blur(0);
+}
+
+.site-footer__divider {
+  margin-top: 20px;
+  color: var(--gold-soft);
+}
+
+.site-footer__divider .lotus-divider__line {
+  transform: scaleX(0);
+  transform-origin: right center;
+  transition: transform 1.4s var(--ease-out) 1.5s;
+}
+
+.site-footer__divider .lotus-divider__line--end {
+  transform-origin: left center;
+}
+
+.site-footer__divider .lotus-divider__lotus {
+  opacity: 0;
+  scale: 0.3;
+  rotate: -40deg;
+  transition:
+    opacity 0.8s ease 1.3s,
+    scale 1.2s var(--ease-out) 1.3s,
+    rotate 1.2s var(--ease-out) 1.3s;
+}
+
+.site-footer[data-inview='true'] .site-footer__divider :is(.lotus-divider__line, .lotus-divider__lotus) {
+  transform: scaleX(1);
+  opacity: 1;
+  scale: 1;
+  rotate: 0deg;
+}
+
+.site-footer__date {
+  margin-top: 18px;
+  padding-left: 0.3em;
+  font-family: var(--font-caps);
+  font-size: 0.74rem;
+  letter-spacing: 0.7em;
+  text-transform: uppercase;
+  opacity: 0;
+  transition:
+    opacity 1.2s ease 1.8s,
+    letter-spacing 1.8s var(--ease-out) 1.8s;
+}
+
+.site-footer[data-inview='true'] .site-footer__date {
+  opacity: 1;
+  letter-spacing: 0.3em;
+}
+
+.site-footer__thanks {
+  max-width: 30rem;
+  margin: 18px auto 0;
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-style: italic;
+  line-height: 1.6;
+  color: rgba(242, 228, 200, 0.78);
+  opacity: 0;
+  translate: 0 10px;
+  transition:
+    opacity 1.1s var(--ease-out) 2.1s,
+    translate 1.1s var(--ease-out) 2.1s;
+}
+
+.site-footer[data-inview='true'] .site-footer__thanks {
+  opacity: 1;
+  translate: 0 0;
+}
+
+/* Hashtag types itself out */
+.site-footer__hashtag {
+  margin-top: 16px;
+  font-family: var(--font-caps);
+  font-size: 0.84rem;
+  letter-spacing: 0.12em;
+  color: var(--gold-soft);
+}
+
+.site-footer__typed {
+  display: inline-block;
+  max-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  vertical-align: bottom;
+  transition: max-width 1.6s steps(19, end) 2.6s;
+}
+
+.site-footer[data-inview='true'] .site-footer__typed {
+  max-width: 22em;
+}
+
+.site-footer__caret {
+  display: inline-block;
+  width: 1px;
+  height: 1.1em;
+  margin-left: 3px;
+  vertical-align: -0.15em;
+  background: var(--gold-soft);
+  animation: caret-blink 1s steps(1) infinite;
+}
+
+/* ---------- Footer navigation ---------- */
+
+.site-footer__nav {
+  margin-top: clamp(48px, 6vw, 64px);
+  padding-block: 22px;
+  border-block: 1px solid rgba(223, 195, 140, 0.18);
+}
+
+.site-footer__nav ul {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px 26px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.site-footer__nav li {
+  opacity: 0;
+  translate: 0 10px;
+  transition:
+    opacity 0.8s var(--ease-out) calc(2.4s + var(--i) * 0.08s),
+    translate 0.8s var(--ease-out) calc(2.4s + var(--i) * 0.08s);
+}
+
+.site-footer[data-inview='true'] .site-footer__nav li {
+  opacity: 1;
+  translate: 0 0;
+}
+
+.site-footer__nav a {
+  position: relative;
+  display: inline-block;
+  padding: 8px 0;
+  font-family: var(--font-caps);
+  font-size: 0.66rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(242, 228, 200, 0.75);
+  transition: color 0.3s ease;
+}
+
+/* Gold underline grows from the centre on hover */
+.site-footer__nav a::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0.22em;
+  bottom: 3px;
+  height: 1px;
+  background: var(--gold-soft);
+  transform: scaleX(0);
+  transition: transform 0.45s var(--ease-out);
+}
+
+.site-footer__nav a:hover,
+.site-footer__nav a:focus-visible {
+  color: var(--gold-soft);
+}
+
+.site-footer__nav a:hover::after,
+.site-footer__nav a:focus-visible::after {
+  transform: scaleX(1);
+}
+
+/* ---------- Bottom line & back-to-top ---------- */
+
+.site-footer__bottom {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 14px 32px;
+  margin-top: 22px;
+  /* keep clear of the fixed music button */
+  padding-inline: calc(var(--control-size) + 8px);
+  font-family: var(--font-display);
+  font-size: 0.98rem;
+  font-style: italic;
+  text-align: center;
+  color: rgba(242, 228, 200, 0.55);
+}
+
+.site-footer__top {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--font-caps);
+  font-size: 0.64rem;
+  font-style: normal;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gold-soft);
+}
+
+/* Ring fills with overall page scroll progress */
+.site-footer__top-ring {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+}
+
+.site-footer__top-ring svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  rotate: -90deg;
+}
+
+.site-footer__top-track,
+.site-footer__top-progress {
+  fill: none;
+  stroke-width: 1.2;
+}
+
+.site-footer__top-track {
+  stroke: rgba(223, 195, 140, 0.22);
+}
+
+.site-footer__top-progress {
+  stroke: var(--gold-soft);
+  stroke-linecap: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: calc(1 - var(--progress, 0));
+  transition: stroke-dashoffset 0.2s linear;
+}
+
+.site-footer__top-arrow {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  line-height: 1;
+  animation: arrow-float 2.4s ease-in-out infinite;
+  animation-play-state: paused;
+  transition: transform 0.45s var(--ease-out);
+}
+
+.site-footer__top:hover .site-footer__top-arrow,
+.site-footer__top:focus-visible .site-footer__top-arrow {
+  transform: translateY(-6px);
+}
+
+/* ---------- Keyframes ---------- */
+
+@keyframes footer-twinkle {
+  from { opacity: 0.15; scale: 0.7; }
+  to { opacity: 1; scale: 1.2; }
+}
+
+@keyframes footer-shoot {
+  0% { opacity: 0; transform: translate3d(0, 0, 0); }
+  1.5% { opacity: 1; }
+  11% { opacity: 0; transform: translate3d(60vw, 0, 0); }
+  100% { opacity: 0; transform: translate3d(60vw, 0, 0); }
+}
+
+@keyframes letter-glint {
+  0%, 84%, 100% { color: inherit; text-shadow: none; }
+  90% { color: #ffe6ad; text-shadow: 0 0 18px rgba(255, 210, 130, 0.75); }
+}
+
+@keyframes caret-blink {
+  50% { opacity: 0; }
+}
+
+@keyframes arrow-float {
+  0%, 100% { translate: 0 1px; }
+  50% { translate: 0 -3px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-footer__sky {
+    display: none;
+  }
+
+  .site-footer__typed {
+    max-width: none;
+  }
+}

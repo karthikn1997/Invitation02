@@ -1,0 +1,675 @@
+/* ==========================================================================
+   Venue — arriving at the mandapam.
+   State hooks: .venue[data-active] while on screen (ambient loops),
+   .venue__figure / .venue__map [data-inview] from <Reveal>,
+   .venue__info[data-inview] for the details.
+   ========================================================================== */
+
+.venue[data-active='true'] :is(
+    .venue__route path,
+    .venue__bell svg,
+    .diya__flame,
+    .diya__glow,
+    .venue__radar span,
+    .venue__directions svg,
+    .venue__call svg
+  ) {
+  animation-play-state: running;
+}
+
+/* ---------- Background: winding route & lotus ---------- */
+
+.venue__route {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 2s ease;
+}
+
+.venue[data-active='true'] .venue__route {
+  opacity: 1;
+}
+
+.venue__route path {
+  fill: none;
+  stroke: var(--gold-deep);
+  stroke-opacity: 0.32;
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-dasharray: 0.1 16;
+  animation: route-march 5s linear infinite;
+  animation-play-state: paused;
+}
+
+.venue__art {
+  position: absolute;
+  top: clamp(40px, 5vw, 72px);
+  right: clamp(-60px, -3vw, -20px);
+  width: clamp(140px, 20vw, 280px);
+  height: auto;
+  color: var(--gold-deep);
+  opacity: 0.14;
+}
+
+.venue__art :is(path, circle) {
+  stroke-dasharray: 1000;
+  stroke-dashoffset: 1000;
+  transition: stroke-dashoffset 5s var(--ease-soft) 0.4s;
+}
+
+.venue[data-active='true'] .venue__art :is(path, circle) {
+  stroke-dashoffset: 0;
+}
+
+/* ---------- Heading entrance (scoped) ---------- */
+
+.venue .section-head .lotus-divider__line {
+  transform: scaleX(0);
+  transform-origin: right center;
+  transition: transform 1.4s var(--ease-out) 0.45s;
+}
+
+.venue .section-head .lotus-divider__line--end {
+  transform-origin: left center;
+}
+
+.venue .section-head .lotus-divider__lotus {
+  opacity: 0;
+  scale: 0.3;
+  rotate: -40deg;
+  transition:
+    opacity 0.8s ease 0.2s,
+    scale 1.2s var(--ease-out) 0.2s,
+    rotate 1.2s var(--ease-out) 0.2s;
+}
+
+.venue .section-head [data-inview='true'] :is(.lotus-divider__line, .lotus-divider__lotus) {
+  transform: scaleX(1);
+  opacity: 1;
+  scale: 1;
+  rotate: 0deg;
+}
+
+.venue .section-head__title :is(span, em) {
+  clip-path: inset(0 -6% 100% -6%);
+  translate: 0 45%;
+  transition:
+    clip-path 1.3s var(--ease-out) 0.5s,
+    translate 1.3s var(--ease-out) 0.5s;
+}
+
+.venue .section-head__title em {
+  transition-delay: 0.75s;
+}
+
+.venue .section-head__title[data-inview='true'] :is(span, em) {
+  clip-path: inset(-20% -6% -30% -6%);
+  translate: 0 0;
+}
+
+/* ---------- Grid ---------- */
+
+.venue__grid {
+  display: grid;
+  justify-items: center;
+  gap: clamp(56px, 7vw, 96px);
+  margin-top: clamp(64px, 8vw, 96px);
+}
+
+/* ---------- Doorway figure ---------- */
+
+.venue__figure {
+  position: relative;
+  width: min(78%, 400px);
+  padding-bottom: 72px; /* room for the threshold kolam */
+}
+
+.venue__arch,
+.venue__doorway {
+  border-radius: 50% 50% 18px 18px / 32% 32% 18px 18px;
+}
+
+.venue__arch {
+  padding: 10px;
+  border: 1px solid var(--gold-line);
+  background: rgba(255, 250, 240, 0.55);
+  box-shadow:
+    0 0 0 5px rgba(248, 240, 225, 0.9),
+    0 0 0 6px rgba(164, 128, 63, 0.22),
+    0 30px 56px -34px rgba(74, 40, 18, 0.5);
+}
+
+.venue__doorway {
+  position: relative;
+  overflow: hidden;
+  perspective: 900px;
+}
+
+.venue__photo {
+  aspect-ratio: 4 / 5;
+  border-radius: inherit;
+}
+
+/* Carved temple doors that swing open to reveal the venue */
+.venue__door {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 50%;
+  background-image:
+    radial-gradient(circle, #e0bd78 1.4px, rgba(224, 189, 120, 0.35) 2px, transparent 2.6px),
+    linear-gradient(180deg, #74261b 0%, #5a1b13 55%, #45130e 100%);
+  background-size: 20px 20px, 100% 100%;
+  background-position: 10px 10px, 0 0;
+  box-shadow:
+    inset 0 0 0 1px rgba(223, 195, 140, 0.55),
+    inset 0 0 0 8px rgba(40, 10, 6, 0.35),
+    inset 0 0 0 9px rgba(223, 195, 140, 0.4);
+  backface-visibility: hidden;
+  transition:
+    transform 2.4s cubic-bezier(0.6, 0.05, 0.25, 1) 0.6s,
+    opacity 0.9s ease 2.3s;
+}
+
+.venue__door--l {
+  left: 0;
+  transform-origin: left center;
+}
+
+.venue__door--r {
+  right: 0;
+  transform-origin: right center;
+}
+
+/* Arched inner panel */
+.venue__door::before {
+  content: '';
+  position: absolute;
+  inset: 14% 16% 10%;
+  border: 1px solid rgba(223, 195, 140, 0.45);
+  border-radius: 999px 999px 4px 4px;
+}
+
+/* Brass ring handles at the meeting edge */
+.venue__door::after {
+  content: '';
+  position: absolute;
+  top: 54%;
+  width: 12px;
+  height: 12px;
+  border: 2px solid #e0bd78;
+  border-radius: 50%;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+.venue__door--l::after { right: 9px; }
+.venue__door--r::after { left: 9px; }
+
+.venue__figure[data-inview='true'] .venue__door--l {
+  transform: rotateY(-105deg);
+  opacity: 0;
+}
+
+.venue__figure[data-inview='true'] .venue__door--r {
+  transform: rotateY(105deg);
+  opacity: 0;
+}
+
+/* Temple bells hanging beside the arch */
+.venue__bell {
+  position: absolute;
+  top: 4%;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 20px;
+  color: var(--gold-deep);
+  opacity: 0;
+  transition: opacity 1s ease 0.3s;
+}
+
+.venue__bell::before {
+  content: '';
+  width: 1px;
+  height: clamp(28px, 4vw, 44px);
+  background: linear-gradient(180deg, transparent, var(--gold));
+}
+
+.venue__bell--l { left: -9%; }
+.venue__bell--r { right: -9%; }
+
+.venue__bell svg {
+  width: 20px;
+  height: auto;
+  margin-top: -1px;
+  transform-origin: 50% 0;
+  animation: venue-bell 3.6s ease-in-out infinite alternate;
+  animation-play-state: paused;
+}
+
+.venue__bell--r svg {
+  animation-delay: -1.8s;
+}
+
+.venue__figure[data-inview='true'] .venue__bell {
+  opacity: 1;
+}
+
+/* Diyas at the threshold */
+.venue__diya {
+  position: absolute;
+  bottom: 50px;
+  z-index: 2;
+  width: clamp(36px, 10vw, 46px);
+  opacity: 0;
+  translate: 0 10px;
+  transition:
+    opacity 1s ease 2s,
+    translate 1s var(--ease-out) 2s;
+}
+
+.venue__diya--l { left: -7%; }
+.venue__diya--r { right: -7%; }
+
+.venue__diya--r .diya__flame {
+  animation-delay: -0.7s;
+}
+
+.venue__figure[data-inview='true'] .venue__diya {
+  opacity: 1;
+  translate: 0 0;
+}
+
+/* Welcome kolam drawn at the doorstep */
+.venue__kolam {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 84px;
+  height: auto;
+  margin-left: -42px;
+  color: var(--gold-deep);
+  opacity: 0.75;
+}
+
+.venue__kolam g:last-child > * {
+  stroke-dasharray: 400;
+  stroke-dashoffset: 400;
+  transition: stroke-dashoffset 2.6s var(--ease-soft) 2.2s;
+}
+
+.venue__kolam g:first-child circle {
+  opacity: 0;
+  transition: opacity 0.8s ease 2s;
+}
+
+.venue__figure[data-inview='true'] .venue__kolam g:last-child > * {
+  stroke-dashoffset: 0;
+}
+
+.venue__figure[data-inview='true'] .venue__kolam g:first-child circle {
+  opacity: 1;
+}
+
+/* ---------- Details ---------- */
+
+.venue__info {
+  width: 100%;
+  max-width: 34rem;
+  text-align: center;
+}
+
+.venue__name {
+  font-family: var(--font-display);
+  font-size: clamp(1.9rem, 5.4vw, 2.6rem);
+  font-weight: 500;
+  line-height: 1.15;
+  color: var(--maroon);
+  text-wrap: balance;
+  opacity: 0;
+  clip-path: inset(-10% 105% -20% -3%);
+  transition:
+    opacity 0.6s ease 0.1s,
+    clip-path 1.8s var(--ease-soft) 0.1s;
+}
+
+.venue__info[data-inview='true'] .venue__name {
+  opacity: 1;
+  clip-path: inset(-10% -3% -20% -3%);
+}
+
+.venue__address {
+  display: flex;
+  flex-direction: column;
+  margin-top: 14px;
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-style: italic;
+  line-height: 1.6;
+  color: var(--ink-soft);
+}
+
+.venue__address span {
+  opacity: 0;
+  translate: 0 10px;
+  transition:
+    opacity 0.9s var(--ease-out) calc(0.6s + var(--i) * 0.15s),
+    translate 0.9s var(--ease-out) calc(0.6s + var(--i) * 0.15s);
+}
+
+.venue__info[data-inview='true'] .venue__address span {
+  opacity: 1;
+  translate: 0 0;
+}
+
+.venue__facts {
+  position: relative;
+  display: grid;
+  gap: 14px;
+  margin: 26px 0 0;
+  padding: 24px 0 0;
+  list-style: none;
+  text-align: left;
+}
+
+/* Gold rule that draws in above the facts */
+.venue__facts::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, var(--gold), var(--gold-line) 70%, transparent);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 1.4s var(--ease-out) 0.8s;
+}
+
+.venue__info[data-inview='true'] .venue__facts::before {
+  transform: scaleX(1);
+}
+
+.venue__facts li {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-family: var(--font-display);
+  font-size: 1.12rem;
+  font-weight: 500;
+  line-height: 1.45;
+  color: var(--text-brown);
+  opacity: 0;
+  translate: 24px 0;
+  transition:
+    opacity 0.9s var(--ease-out) calc(1s + var(--i) * 0.15s),
+    translate 0.9s var(--ease-out) calc(1s + var(--i) * 0.15s);
+}
+
+.venue__info[data-inview='true'] .venue__facts li {
+  opacity: 1;
+  translate: 0 0;
+}
+
+.venue__fact-icon {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--gold-line);
+  border-radius: 50%;
+  color: var(--gold-deep);
+  background: radial-gradient(circle at 50% 35%, #fffaf0, #f3e6cc);
+  scale: 0.4;
+  transition: scale 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) calc(1.1s + var(--i) * 0.15s);
+}
+
+.venue__fact-icon svg {
+  width: 18px;
+  height: 18px;
+}
+
+.venue__info[data-inview='true'] .venue__fact-icon {
+  scale: 1;
+}
+
+.venue__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 30px;
+  opacity: 0;
+  translate: 0 16px;
+  transition:
+    opacity 1s var(--ease-out) 1.6s,
+    translate 1s var(--ease-out) 1.6s;
+}
+
+.venue__info[data-inview='true'] .venue__actions {
+  opacity: 1;
+  translate: 0 0;
+}
+
+/* Arrow nudges toward the road; the phone rings now and then */
+.venue__directions svg {
+  animation: arrow-nudge 2.4s ease-in-out 3s infinite;
+  animation-play-state: paused;
+}
+
+.venue__call svg {
+  animation: phone-ring 4.5s ease-in-out 3.5s infinite;
+  animation-play-state: paused;
+}
+
+/* ---------- Map ---------- */
+
+.venue__map {
+  position: relative;
+  margin-top: clamp(56px, 7vw, 88px);
+  padding: 8px;
+  border: 1px solid var(--gold-line);
+  border-radius: 20px;
+  background: rgba(255, 250, 240, 0.6);
+  box-shadow: 0 30px 56px -40px rgba(74, 40, 18, 0.5);
+}
+
+/* The map opens outward from the venue pin */
+.venue__map-clip {
+  position: relative;
+  overflow: hidden;
+  border-radius: 14px;
+  clip-path: circle(0% at 50% 50%);
+  transition: clip-path 2s cubic-bezier(0.65, 0, 0.35, 1) 0.3s;
+}
+
+.venue__map[data-inview='true'] .venue__map-clip {
+  clip-path: circle(75% at 50% 50%);
+}
+
+.venue__map iframe {
+  display: block;
+  width: 100%;
+  height: clamp(300px, 45vw, 440px);
+  border: 0;
+  background: var(--paper-deep);
+  filter: sepia(0.22) saturate(0.85);
+  transition: filter 0.8s ease;
+}
+
+.venue__map:hover iframe {
+  filter: sepia(0.05) saturate(1);
+}
+
+/* Gold ripples around the pin */
+.venue__radar {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  pointer-events: none;
+}
+
+.venue__radar span {
+  position: absolute;
+  left: -30px;
+  top: -30px;
+  width: 60px;
+  height: 60px;
+  border: 2px solid rgba(164, 128, 63, 0.7);
+  border-radius: 50%;
+  opacity: 0;
+  animation: radar 3.6s ease-out infinite;
+  animation-play-state: paused;
+}
+
+.venue__radar span:nth-child(2) { animation-delay: 1.2s; }
+.venue__radar span:nth-child(3) { animation-delay: 2.4s; }
+
+.venue__corner {
+  position: absolute;
+  z-index: 2;
+  width: 30px;
+  height: auto;
+  color: var(--gold);
+  opacity: 0;
+  scale: 0.5;
+  transition:
+    opacity 0.8s ease 1.8s,
+    scale 1s var(--ease-out) 1.8s;
+}
+
+.venue__corner--tl { top: -12px; left: -12px; }
+.venue__corner--tr { top: -12px; right: -12px; transform: scaleX(-1); }
+.venue__corner--bl { bottom: -12px; left: -12px; transform: scaleY(-1); }
+.venue__corner--br { bottom: -12px; right: -12px; transform: scale(-1); }
+
+.venue__map[data-inview='true'] .venue__corner {
+  opacity: 0.9;
+  scale: 1;
+}
+
+/* Compass whose needle swings and settles on north */
+.venue__compass {
+  position: absolute;
+  top: 22px;
+  right: 22px;
+  z-index: 2;
+  width: clamp(48px, 7vw, 64px);
+  height: auto;
+  filter: drop-shadow(0 6px 10px rgba(60, 30, 10, 0.3));
+  opacity: 0;
+  scale: 0.6;
+  transition:
+    opacity 0.8s ease 2s,
+    scale 1s cubic-bezier(0.34, 1.56, 0.64, 1) 2s;
+  pointer-events: none;
+}
+
+.venue__map[data-inview='true'] .venue__compass {
+  opacity: 1;
+  scale: 1;
+}
+
+.compass__face { fill: rgba(252, 246, 234, 0.95); stroke: var(--gold); stroke-width: 1; }
+.compass__ring { fill: none; stroke: var(--gold-line); stroke-width: 0.6; stroke-dasharray: 1.5 2.5; }
+.compass__tick { stroke: var(--gold-deep); stroke-width: 1.2; stroke-linecap: round; }
+.compass__n {
+  font-family: var(--font-caps);
+  font-size: 8px;
+  text-anchor: middle;
+  fill: var(--maroon);
+}
+.compass__north { fill: var(--maroon); }
+.compass__south { fill: var(--gold); }
+.compass__pin { fill: var(--gold-deep); }
+
+.compass__needle {
+  transform-box: view-box;
+  transform-origin: 50% 50%;
+  rotate: 70deg;
+}
+
+.venue__map[data-inview='true'] .compass__needle {
+  animation: needle-settle 3.2s var(--ease-out) 2.2s forwards;
+}
+
+/* ---------- Desktop ---------- */
+
+@media (min-width: 960px) {
+  .venue__grid {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    align-items: center;
+    justify-items: stretch;
+  }
+
+  .venue__figure {
+    justify-self: center;
+    width: 100%;
+    max-width: 400px;
+  }
+
+  .venue__info {
+    justify-self: start;
+    text-align: left;
+  }
+
+  .venue__actions {
+    justify-content: flex-start;
+  }
+}
+
+/* ---------- Keyframes ---------- */
+
+@keyframes route-march {
+  to { stroke-dashoffset: -161; }
+}
+
+@keyframes venue-bell {
+  from { rotate: -7deg; }
+  to { rotate: 7deg; }
+}
+
+@keyframes radar {
+  0% { opacity: 0; transform: scale(0.3); }
+  10% { opacity: 0.9; }
+  100% { opacity: 0; transform: scale(2.4); }
+}
+
+@keyframes needle-settle {
+  0% { rotate: 70deg; }
+  25% { rotate: -38deg; }
+  45% { rotate: 22deg; }
+  62% { rotate: -11deg; }
+  78% { rotate: 5deg; }
+  90% { rotate: -2deg; }
+  100% { rotate: 0deg; }
+}
+
+@keyframes arrow-nudge {
+  0%, 60%, 100% { translate: 0 0; }
+  75% { translate: 5px 0; }
+}
+
+@keyframes phone-ring {
+  0%, 70%, 100% { rotate: 0deg; }
+  74% { rotate: -14deg; }
+  78% { rotate: 12deg; }
+  82% { rotate: -10deg; }
+  86% { rotate: 8deg; }
+  90% { rotate: 0deg; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .venue__radar,
+  .venue__route {
+    display: none;
+  }
+
+  .compass__needle {
+    rotate: 0deg;
+  }
+}

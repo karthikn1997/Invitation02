@@ -1,0 +1,258 @@
+.site-header {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: calc(var(--safe-top) + 14px) var(--gutter) 0;
+  pointer-events: none;
+}
+
+.site-header > * {
+  pointer-events: auto;
+}
+
+/* Frosted ivory bar once the header sits over paper sections */
+.site-header::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 -12px;
+  z-index: -1;
+  background: rgba(248, 240, 225, 0.86);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 1px 0 rgba(164, 128, 63, 0.28);
+  opacity: 0;
+  transition: opacity 0.5s var(--ease-soft);
+}
+
+.site-header[data-solid='true']::before {
+  opacity: 1;
+}
+
+.site-header[data-solid='true'] .site-header__title,
+.site-header[data-solid='true'] .menu-toggle__label {
+  color: var(--maroon);
+  text-shadow: none;
+}
+
+.site-header[data-solid='true'] .site-header__title span {
+  color: var(--gold-deep);
+}
+
+/* Monogram */
+.monogram {
+  flex: none;
+  border-radius: 50%;
+}
+
+.monogram__ring {
+  display: grid;
+  grid-auto-flow: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  width: var(--control-size);
+  height: var(--control-size);
+  border-radius: 50%;
+  border: 1px solid rgba(223, 195, 140, 0.8);
+  background: rgba(28, 18, 12, 0.42);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  box-shadow:
+    var(--shadow-soft),
+    inset 0 0 0 3px rgba(28, 18, 12, 0.25),
+    inset 0 0 0 4px rgba(223, 195, 140, 0.28);
+  font-family: var(--font-display);
+  font-size: calc(var(--control-size) * 0.36);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  color: var(--ivory);
+  transition: transform 0.5s var(--ease-out);
+}
+
+.monogram__amp {
+  font-style: italic;
+  font-size: 0.62em;
+  color: var(--gold-soft);
+  transform: translateY(-0.05em);
+}
+
+.monogram:hover .monogram__ring {
+  transform: rotate(-6deg);
+}
+
+/* Centred names (desktop only) */
+.site-header__title {
+  display: none;
+  font-family: var(--font-caps);
+  font-size: 0.72rem;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: rgba(251, 244, 230, 0.92);
+  text-shadow: 0 1px 12px rgba(20, 10, 4, 0.55);
+  transition: color 0.5s ease;
+}
+
+.site-header__title span {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 1.3em;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--gold-soft);
+}
+
+/* Menu toggle */
+.menu-toggle {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  border-radius: 999px;
+}
+
+.menu-toggle__label {
+  display: none;
+  font-family: var(--font-caps);
+  font-size: 0.7rem;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--ivory);
+  text-shadow: 0 1px 12px rgba(20, 10, 4, 0.55);
+}
+
+.menu-toggle__button {
+  display: grid;
+  place-items: center;
+  width: var(--control-size);
+  height: var(--control-size);
+  border-radius: 50%;
+  background: rgba(251, 244, 230, 0.92);
+  border: 1px solid rgba(201, 162, 94, 0.55);
+  box-shadow: var(--shadow-soft);
+  transition: transform 0.4s var(--ease-out), background-color 0.4s ease;
+}
+
+.menu-toggle:hover .menu-toggle__button {
+  transform: scale(1.05);
+  background: var(--ivory);
+}
+
+.menu-toggle__bars {
+  position: relative;
+  display: block;
+  width: 18px;
+  height: 11px;
+}
+
+.menu-toggle__bars span {
+  position: absolute;
+  left: 0;
+  height: 1.2px;
+  border-radius: 2px;
+  background: var(--ink-soft);
+  transition:
+    transform 0.45s var(--ease-out),
+    opacity 0.3s ease,
+    top 0.45s var(--ease-out);
+}
+
+.menu-toggle__bars span:nth-child(1) { top: 0; width: 100%; }
+.menu-toggle__bars span:nth-child(2) { top: 5px; left: 30%; width: 70%; }
+.menu-toggle__bars span:nth-child(3) { top: 10px; width: 100%; }
+
+.menu-toggle[aria-expanded='true'] .menu-toggle__bars span:nth-child(1) { top: 5px; transform: rotate(45deg); }
+.menu-toggle[aria-expanded='true'] .menu-toggle__bars span:nth-child(2) { opacity: 0; }
+.menu-toggle[aria-expanded='true'] .menu-toggle__bars span:nth-child(3) { top: 5px; transform: rotate(-45deg); }
+
+@media (min-width: 900px) {
+  .site-header {
+    padding-top: calc(var(--safe-top) + 28px);
+  }
+
+  .site-header__title {
+    display: block;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .menu-toggle__label {
+    display: block;
+  }
+}
+
+/* Full-screen menu */
+.site-menu {
+  position: fixed;
+  inset: 0;
+  z-index: 25;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 40px;
+  padding: calc(var(--safe-top) + 96px) var(--gutter) calc(var(--safe-bottom) + 48px);
+  background:
+    radial-gradient(120% 80% at 50% 0%, rgba(223, 195, 140, 0.18), transparent 60%),
+    rgba(26, 16, 10, 0.88);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.5s var(--ease-soft), visibility 0s linear 0.5s;
+}
+
+.site-menu[data-open='true'] {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.5s var(--ease-soft), visibility 0s;
+}
+
+.site-menu__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+}
+
+.site-menu__list li {
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 0.6s var(--ease-out), transform 0.6s var(--ease-out);
+}
+
+.site-menu[data-open='true'] .site-menu__list li {
+  opacity: 1;
+  transform: none;
+  transition-delay: calc(0.12s + var(--i) * 0.06s);
+}
+
+.site-menu__list a {
+  display: inline-block;
+  padding: 6px 12px;
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 7vw, 3rem);
+  font-weight: 400;
+  line-height: 1.25;
+  color: var(--ivory);
+  transition: color 0.35s ease;
+}
+
+.site-menu__list a:hover,
+.site-menu__list a:focus-visible {
+  color: var(--gold-soft);
+  font-style: italic;
+}
+
+.site-menu__footnote {
+  font-family: var(--font-caps);
+  font-size: 0.7rem;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: rgba(251, 244, 230, 0.6);
+}

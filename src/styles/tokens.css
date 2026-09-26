@@ -1,0 +1,51 @@
+:root {
+  /* Palette — warm ivory, antique gold, muted terracotta */
+  --ivory: #fbf4e6;
+  --cream: #f2e4c8;
+  --parchment: #e7d3ac;
+  --gold: #c9a25e;
+  --gold-soft: #dfc38c;
+  --gold-deep: #a4803f;
+  --terracotta: #983a28;
+  --terracotta-hi: #ae4731;
+  --terracotta-lo: #742b1e;
+  --ink: #1c120c;
+  --ink-soft: #3b2b20;
+
+  /* Paper sections */
+  --paper: #f8f0e1;
+  --paper-deep: #f1e5cf;
+  --maroon: #7a2320;
+  --maroon-soft: #93362b;
+  --text-brown: #4a372b;
+  --gold-text: #8a672c; /* antique gold dark enough for small text on paper */
+  --gold-line: rgba(164, 128, 63, 0.55);
+
+  --glass: rgba(24, 14, 9, 0.44);
+  --glass-line: rgba(251, 244, 230, 0.58);
+  --glass-line-soft: rgba(251, 244, 230, 0.2);
+
+  /* Type */
+  --font-display: 'Cormorant Garamond', 'Cormorant', Georgia, 'Times New Roman', serif;
+  --font-caps: 'Marcellus', 'Cormorant Garamond', Georgia, serif;
+  --font-tamil: 'Noto Serif Tamil', 'Latha', serif;
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --ease-soft: cubic-bezier(0.45, 0.05, 0.25, 1);
+
+  /* Layout */
+  --gutter: clamp(16px, 4.5vw, 64px);
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --control-size: 46px;
+
+  --shadow-soft: 0 10px 30px -12px rgba(20, 10, 4, 0.45);
+  --shadow-card: 0 24px 60px -24px rgba(12, 6, 2, 0.55);
+}
+
+@media (min-width: 900px) {
+  :root {
+    --control-size: 52px;
+  }
+}

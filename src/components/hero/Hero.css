@@ -1,0 +1,576 @@
+/* ==========================================================================
+   Hero — mobile-first.
+
+   Vertical rhythm (stacked layouts): nav → gopuram → compact card →
+   couple (heads start at ~55% of the viewport) → steps, lamps, controls.
+   The card is sized from viewport height so it always ends near 40% and
+   never reaches the couple.
+
+   Photography: portrait crop below 2:3, landscape crop above it (see
+   HeroBackground). Both crops are height-fitted in their range, which keeps
+   the couple's heads at a stable ~55% line.
+
+   Wide screens (≥ 3:2): the card moves to the left so the gopuram holds the
+   centre and the couple walks up the middle of the frame beside it.
+   ========================================================================== */
+
+.hero {
+  --name-size: clamp(2.1rem, min(11.5vw, 5.4svh), 3.3rem);
+
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100svh;
+  overflow: hidden;
+  color: var(--ivory);
+}
+
+/* ---------- Background photography + grade ---------- */
+
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: #cdb89a; /* tone shown before the photo decodes */
+}
+
+/* Slow zoom is anchored on the couple's head line so they never drift up
+   toward the card. */
+.hero-bg__frame {
+  position: absolute;
+  inset: 0;
+  transform-origin: 50% 55%;
+  animation: hero-drift 46s var(--ease-soft) infinite alternate;
+  will-change: transform;
+}
+
+.hero-bg__frame picture,
+.hero-bg__img {
+  width: 100%;
+  height: 100%;
+}
+
+.hero-bg__img {
+  object-fit: cover;
+  object-position: 50% 60%;
+}
+
+.hero-bg__wash,
+.hero-bg__sun,
+.hero-bg__lamps,
+.hero-bg__vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+/* Warm ivory veil: softens contrast and ties the photo to the palette */
+.hero-bg__wash {
+  background: linear-gradient(
+    180deg,
+    rgba(250, 230, 196, 0.2) 0%,
+    rgba(246, 226, 192, 0.1) 45%,
+    rgba(110, 62, 28, 0.12) 100%
+  );
+}
+
+/* Early-morning sun haze from the left */
+.hero-bg__sun {
+  background:
+    radial-gradient(55% 40% at 14% 44%, rgba(255, 214, 152, 0.42), transparent 72%),
+    radial-gradient(80% 50% at 50% 0%, rgba(255, 236, 206, 0.18), transparent 70%);
+  mix-blend-mode: screen;
+  animation: sun-breathe 14s ease-in-out infinite alternate;
+}
+
+/* Warm glow over the lamp-lined steps */
+.hero-bg__lamps {
+  background:
+    radial-gradient(26% 16% at 16% 90%, rgba(255, 168, 76, 0.26), transparent 72%),
+    radial-gradient(26% 16% at 84% 90%, rgba(255, 168, 76, 0.26), transparent 72%);
+  mix-blend-mode: screen;
+  animation: lamp-flicker 5.5s ease-in-out infinite alternate;
+}
+
+/* Legibility for header and bottom controls */
+.hero-bg__vignette {
+  background:
+    linear-gradient(180deg, rgba(20, 11, 5, 0.42) 0%, rgba(20, 11, 5, 0) 15%),
+    linear-gradient(0deg, rgba(20, 11, 5, 0.45) 0%, rgba(20, 11, 5, 0) 16%),
+    radial-gradient(140% 100% at 50% 42%, transparent 58%, rgba(20, 11, 5, 0.3) 100%);
+}
+
+/* ---------- Petals & motes ---------- */
+
+.petals {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.petal {
+  position: absolute;
+  top: 0;
+  left: var(--left);
+  width: var(--size);
+  height: var(--size);
+  opacity: 0;
+  animation: petal-fall var(--dur) linear var(--delay) infinite;
+  will-change: transform, opacity;
+}
+
+.petal__body {
+  display: block;
+  width: 100%;
+  height: 100%;
+  animation: petal-sway var(--sway-dur) ease-in-out infinite alternate;
+}
+
+.petal svg {
+  width: 100%;
+  height: 100%;
+}
+
+.petal--jasmine svg {
+  filter: drop-shadow(0 1px 1.5px rgba(80, 50, 20, 0.25));
+}
+
+/* Fewer petals on small screens */
+.petal:nth-child(n + 13) {
+  display: none;
+}
+
+.mote {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: rgba(255, 232, 180, 0.95);
+  box-shadow: 0 0 8px 1px rgba(255, 210, 140, 0.7);
+  opacity: 0;
+  animation: mote-twinkle var(--dur) ease-in-out var(--delay) infinite alternate;
+}
+
+/* ---------- Content column ---------- */
+
+.hero__content {
+  position: relative;
+  z-index: 3;
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: calc(var(--safe-top) + clamp(72px, 10svh, 100px)) var(--gutter) 0;
+}
+
+/* ---------- Invitation card ---------- */
+
+.invite {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: min(100%, 23.5rem);
+  padding: clamp(16px, 2.6svh, 28px) clamp(22px, 6vw, 40px) clamp(18px, 2.8svh, 30px);
+  text-align: center;
+  border: 1px solid var(--glass-line);
+  border-radius: 16px;
+  background: linear-gradient(180deg, rgba(28, 17, 10, 0.5) 0%, rgba(20, 12, 8, 0.4) 100%);
+  -webkit-backdrop-filter: blur(2.5px) saturate(1.05);
+  backdrop-filter: blur(2.5px) saturate(1.05);
+  box-shadow: var(--shadow-card), inset 0 1px 0 rgba(255, 246, 228, 0.08);
+  opacity: 0;
+  transform: translateY(28px);
+  animation: invite-rise 1.4s var(--ease-out) 0.25s forwards;
+}
+
+.invite::before {
+  content: '';
+  position: absolute;
+  inset: 6px;
+  border: 1px solid var(--glass-line-soft);
+  border-radius: 11px;
+  pointer-events: none;
+}
+
+.invite__corner {
+  position: absolute;
+  width: clamp(22px, 6vw, 32px);
+  height: auto;
+  color: var(--gold-soft);
+  opacity: 0.9;
+}
+
+.invite__corner--tl { top: 10px; left: 10px; }
+.invite__corner--tr { top: 10px; right: 10px; transform: scaleX(-1); }
+.invite__corner--bl { bottom: 10px; left: 10px; transform: scaleY(-1); }
+.invite__corner--br { bottom: 10px; right: 10px; transform: scale(-1); }
+
+.invite__eyebrow {
+  font-family: var(--font-tamil);
+  font-size: clamp(0.7rem, 3.1vw, 0.82rem);
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: 0.04em;
+  color: rgba(242, 228, 200, 0.86);
+}
+
+/* Names */
+.invite__names {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: clamp(4px, 1svh, 10px);
+  font-family: var(--font-display);
+  font-weight: 500;
+  line-height: 0.96;
+  color: var(--ivory);
+  text-shadow: 0 2px 18px rgba(10, 5, 2, 0.45);
+}
+
+.invite__name {
+  font-size: var(--name-size);
+  letter-spacing: 0.01em;
+}
+
+.invite__amp {
+  margin: 0.04em 0 0;
+  font-size: calc(var(--name-size) * 0.48);
+  font-style: italic;
+  font-weight: 400;
+  line-height: 1;
+  color: var(--gold-soft);
+}
+
+.invite__date {
+  margin-top: clamp(10px, 1.7svh, 18px);
+  padding-left: 0.3em; /* balances trailing letter-spacing */
+  font-family: var(--font-caps);
+  font-size: clamp(0.62rem, 2.9vw, 0.76rem);
+  letter-spacing: 0.3em;
+  line-height: 1.5;
+  text-transform: uppercase;
+  color: var(--cream);
+  text-shadow: 0 1px 10px rgba(10, 5, 2, 0.5);
+}
+
+/* CTA */
+.invite__cta {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-height: 44px;
+  margin-top: clamp(12px, 2svh, 22px);
+  padding: 0.8em 1.9em 0.8em 1.6em;
+  overflow: hidden;
+  border-radius: 999px;
+  border: 1px solid rgba(223, 195, 140, 0.45);
+  background: linear-gradient(180deg, var(--terracotta-hi) 0%, var(--terracotta) 100%);
+  box-shadow:
+    0 12px 26px -12px rgba(116, 43, 30, 0.85),
+    inset 0 1px 0 rgba(255, 236, 214, 0.18);
+  font-family: var(--font-caps);
+  font-size: clamp(0.64rem, 2.8vw, 0.74rem);
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: #fff;
+  transition:
+    transform 0.45s var(--ease-out),
+    box-shadow 0.45s var(--ease-out),
+    background-color 0.45s ease;
+}
+
+.invite__cta-icon {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  transition: transform 0.45s var(--ease-out);
+}
+
+/* Soft sheen that sweeps across on hover */
+.invite__cta::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(110deg, transparent 30%, rgba(255, 240, 215, 0.22) 50%, transparent 70%);
+  transform: translateX(-120%);
+  transition: transform 0.9s var(--ease-out);
+  pointer-events: none;
+}
+
+.invite__cta:hover,
+.invite__cta:focus-visible {
+  transform: translateY(-2px);
+  background: linear-gradient(180deg, #b9523b 0%, var(--terracotta-hi) 100%);
+  box-shadow:
+    0 18px 32px -14px rgba(116, 43, 30, 0.95),
+    inset 0 1px 0 rgba(255, 236, 214, 0.22);
+}
+
+.invite__cta:hover .invite__cta-icon,
+.invite__cta:focus-visible .invite__cta-icon {
+  transform: translateX(4px);
+}
+
+.invite__cta:hover::after {
+  transform: translateX(120%);
+}
+
+.invite__cta:active {
+  transform: translateY(0);
+}
+
+/* Staggered reveal of the card contents */
+.invite__eyebrow,
+.invite__name,
+.invite__amp,
+.invite__date,
+.invite__cta {
+  opacity: 0;
+  animation: soft-reveal 1.3s var(--ease-out) forwards;
+}
+
+.invite__eyebrow { animation-delay: 0.75s; }
+.invite__name--bride { animation-delay: 1s; }
+.invite__amp { animation-delay: 1.25s; }
+.invite__name--groom { animation-delay: 1.45s; }
+.invite__date { animation-delay: 1.75s; }
+.invite__cta { animation: soft-reveal 1.3s var(--ease-out) 1.95s forwards; }
+
+/* ---------- Scroll cue ---------- */
+
+.scroll-cue {
+  position: absolute;
+  left: 50%;
+  bottom: calc(var(--safe-bottom) + 14px);
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  transform: translateX(-50%);
+  opacity: 0;
+  animation: soft-reveal 1.2s var(--ease-out) 2.4s forwards;
+}
+
+.scroll-cue__label {
+  padding-left: 0.42em;
+  font-family: var(--font-caps);
+  font-size: 0.62rem;
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+  color: rgba(251, 244, 230, 0.9);
+  text-shadow: 0 1px 10px rgba(20, 10, 4, 0.7);
+}
+
+.scroll-cue__line {
+  position: relative;
+  width: 1px;
+  height: clamp(28px, 4svh, 44px);
+  overflow: hidden;
+  background: rgba(251, 244, 230, 0.28);
+}
+
+.scroll-cue__line::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1px;
+  height: 40%;
+  background: linear-gradient(180deg, transparent, var(--gold-soft));
+  animation: scroll-line 2.6s var(--ease-soft) infinite;
+}
+
+/* ==========================================================================
+   Landscape photograph (≥ 2:3) — tablets, square-ish and wide screens
+   ========================================================================== */
+
+@media (min-aspect-ratio: 2/3) {
+  .hero-bg__img {
+    object-position: 50% 58%;
+  }
+
+  .hero-bg__sun {
+    background:
+      radial-gradient(40% 45% at 12% 50%, rgba(255, 214, 152, 0.4), transparent 72%),
+      radial-gradient(60% 45% at 50% 0%, rgba(255, 236, 206, 0.16), transparent 70%);
+  }
+
+  .hero-bg__lamps {
+    background:
+      radial-gradient(18% 18% at 22% 86%, rgba(255, 168, 76, 0.24), transparent 72%),
+      radial-gradient(18% 18% at 78% 86%, rgba(255, 168, 76, 0.24), transparent 72%);
+  }
+
+  .petal:nth-child(n + 13) {
+    display: block;
+  }
+}
+
+@media (min-aspect-ratio: 2/3) and (min-width: 700px) {
+  .invite {
+    width: min(100%, 26rem);
+  }
+
+  .scroll-cue {
+    bottom: calc(var(--safe-bottom) + 22px);
+  }
+}
+
+/* ==========================================================================
+   Wide composition (≥ 3:2) — card beside the couple
+   ========================================================================== */
+
+@media (min-aspect-ratio: 3/2) {
+  .hero {
+    --name-size: clamp(2rem, min(4.6vw, 7.4svh), 4.9rem);
+  }
+
+  /* Extra depth on the left, where the card sits */
+  .hero-bg__vignette {
+    background:
+      linear-gradient(90deg, rgba(20, 11, 5, 0.34) 0%, rgba(20, 11, 5, 0.1) 30%, rgba(20, 11, 5, 0) 45%),
+      linear-gradient(180deg, rgba(20, 11, 5, 0.4) 0%, rgba(20, 11, 5, 0) 16%),
+      linear-gradient(0deg, rgba(20, 11, 5, 0.42) 0%, rgba(20, 11, 5, 0) 18%),
+      radial-gradient(130% 110% at 55% 45%, transparent 60%, rgba(20, 11, 5, 0.28) 100%);
+  }
+
+  .hero__content {
+    justify-content: flex-start;
+    align-items: center;
+    padding:
+      calc(var(--safe-top) + clamp(72px, 11svh, 120px))
+      var(--gutter)
+      clamp(72px, 11svh, 120px)
+      clamp(24px, 6vw, 120px);
+  }
+
+  .invite {
+    width: clamp(290px, 27vw, 440px);
+    padding: clamp(18px, 4svh, 44px) clamp(22px, 2.6vw, 44px) clamp(20px, 4.2svh, 46px);
+    border-radius: 18px;
+  }
+
+  .invite::before {
+    inset: 8px;
+    border-radius: 12px;
+  }
+
+  .invite__corner {
+    width: clamp(26px, 2.4vw, 38px);
+  }
+
+  .invite__eyebrow {
+    font-size: 0.86rem;
+  }
+
+  .invite__names {
+    margin-top: clamp(6px, 1.4svh, 14px);
+  }
+
+  .invite__date {
+    margin-top: clamp(12px, 2.4svh, 24px);
+    font-size: clamp(0.64rem, 0.8vw, 0.78rem);
+  }
+
+  .invite__cta {
+    margin-top: clamp(14px, 2.8svh, 28px);
+    font-size: clamp(0.64rem, 0.78vw, 0.74rem);
+  }
+
+  .scroll-cue {
+    bottom: calc(var(--safe-bottom) + 24px);
+  }
+}
+
+/* Short landscape screens (phones on their side) */
+@media (min-aspect-ratio: 3/2) and (max-height: 520px) {
+  .invite__eyebrow,
+  .scroll-cue {
+    display: none;
+  }
+
+  .invite__names {
+    margin-top: 0;
+  }
+
+  .hero__content {
+    padding-top: calc(var(--safe-top) + 68px);
+    padding-bottom: 24px;
+  }
+}
+
+/* ==========================================================================
+   Keyframes
+   ========================================================================== */
+
+@keyframes hero-drift {
+  from { transform: scale(1); }
+  to { transform: scale(1.045); }
+}
+
+@keyframes sun-breathe {
+  from { opacity: 0.75; }
+  to { opacity: 1; }
+}
+
+@keyframes lamp-flicker {
+  0% { opacity: 0.75; }
+  35% { opacity: 1; }
+  55% { opacity: 0.85; }
+  100% { opacity: 0.95; }
+}
+
+@keyframes invite-rise {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes soft-reveal {
+  from { opacity: 0; filter: blur(4px); translate: 0 8px; }
+  to { opacity: 1; filter: blur(0); translate: 0 0; }
+}
+
+@keyframes petal-fall {
+  0% { transform: translate3d(0, -6vh, 0); opacity: 0; }
+  10% { opacity: var(--o); }
+  86% { opacity: var(--o); }
+  100% { transform: translate3d(var(--drift), 108vh, 0); opacity: 0; }
+}
+
+@keyframes petal-sway {
+  from { transform: translateX(calc(var(--sway) * -1)) rotate3d(1, 0.45, 0.2, 0deg); }
+  to { transform: translateX(var(--sway)) rotate3d(1, 0.45, 0.2, var(--spin)); }
+}
+
+@keyframes mote-twinkle {
+  0%, 20% { opacity: 0; transform: translateY(0); }
+  100% { opacity: 0.75; transform: translateY(-10px); }
+}
+
+@keyframes scroll-line {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(260%); }
+}
+
+/* ---------- Reduced motion ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .petals {
+    display: none;
+  }
+
+  .hero-bg__frame {
+    animation: none;
+    transform: none;
+  }
+}

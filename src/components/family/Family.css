@@ -1,0 +1,580 @@
+/* ==========================================================================
+   Our Families — two families coming together.
+   State hooks: .family[data-active] while on screen (ambient loops),
+   .family-card / .family__union [data-inview] from <Reveal>,
+   .family__closing[data-inview] for the blessing note.
+   ========================================================================== */
+
+.family[data-active='true'] :is(
+    .family__photo img,
+    .shower__piece,
+    .shower__piece svg,
+    .family-card__garland,
+    .family__ripple,
+    .family__amp,
+    .family__jasmine
+  ) {
+  animation-play-state: running;
+}
+
+/* ---------- Blended background photograph ---------- */
+
+.family__photo {
+  position: absolute;
+  inset: 0;
+  opacity: 0.17;
+  mix-blend-mode: multiply;
+  -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 22%, #000 72%, transparent 100%);
+  mask-image: linear-gradient(180deg, transparent 0%, #000 22%, #000 72%, transparent 100%);
+}
+
+.family__photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 35%;
+  filter: sepia(0.55) saturate(0.6) blur(1.5px);
+  scale: 1.08;
+  animation: family-drift 50s var(--ease-soft) infinite alternate;
+  animation-play-state: paused;
+}
+
+/* Soft pool of light that keeps names and text crisp over the photo */
+.family__light {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    90% 60% at 50% 50%,
+    rgba(252, 246, 234, 0.88) 0%,
+    rgba(252, 246, 234, 0.45) 55%,
+    transparent 85%
+  );
+}
+
+@media (min-width: 860px) {
+  .family__light {
+    background: radial-gradient(
+      62% 52% at 50% 50%,
+      rgba(252, 246, 234, 0.85) 0%,
+      rgba(252, 246, 234, 0.4) 55%,
+      transparent 85%
+    );
+  }
+}
+
+/* ---------- Blessing shower ---------- */
+
+.family__shower {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  container-type: size;
+}
+
+.shower__piece {
+  position: absolute;
+  top: -24px;
+  left: var(--left);
+  width: var(--size);
+  opacity: 0;
+  animation: shower-fall var(--dur) linear var(--delay) infinite;
+  animation-play-state: paused;
+}
+
+.shower__piece svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  animation: shower-sway 3.6s ease-in-out infinite alternate;
+  animation-play-state: paused;
+}
+
+/* ---------- Heading entrance (scoped) ---------- */
+
+.family .section-head .lotus-divider__line,
+.family__divider .lotus-divider__line {
+  transform: scaleX(0);
+  transform-origin: right center;
+  transition: transform 1.4s var(--ease-out) 0.45s;
+}
+
+.family .section-head .lotus-divider__line--end,
+.family__divider .lotus-divider__line--end {
+  transform-origin: left center;
+}
+
+.family .section-head .lotus-divider__lotus,
+.family__divider .lotus-divider__lotus {
+  opacity: 0;
+  scale: 0.3;
+  rotate: -40deg;
+  transition:
+    opacity 0.8s ease 0.2s,
+    scale 1.2s var(--ease-out) 0.2s,
+    rotate 1.2s var(--ease-out) 0.2s;
+}
+
+.family .section-head [data-inview='true'] :is(.lotus-divider__line, .lotus-divider__lotus),
+.family__closing[data-inview='true'] :is(.lotus-divider__line, .lotus-divider__lotus) {
+  transform: scaleX(1);
+  opacity: 1;
+  scale: 1;
+  rotate: 0deg;
+}
+
+/* Mask sits on the inner text: a fully clipped element would never
+   register as in view, so the observed <h2> itself stays unclipped. */
+.family .section-head__title span {
+  clip-path: inset(0 -6% 100% -6%);
+  translate: 0 45%;
+  transition:
+    clip-path 1.3s var(--ease-out) 0.5s,
+    translate 1.3s var(--ease-out) 0.5s;
+}
+
+.family .section-head__title[data-inview='true'] span {
+  clip-path: inset(-20% -6% -30% -6%);
+  translate: 0 0;
+}
+
+/* ---------- Grid ---------- */
+
+.family__grid {
+  display: grid;
+  justify-items: center;
+  gap: 22px;
+  margin-top: clamp(64px, 8vw, 96px);
+}
+
+/* ---------- Family cards ---------- */
+
+.family-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: min(100%, 420px);
+  text-align: center;
+}
+
+/* The families approach from opposite sides */
+.family-card--bride { translate: -80px 0; }
+.family-card--groom { translate: 80px 0; }
+
+.family-card__portrait {
+  position: relative;
+  width: clamp(150px, 42vw, 196px);
+  padding: 8px;
+  border: 1px solid rgba(164, 128, 63, 0.18);
+  border-radius: 50%;
+  background: rgba(255, 252, 246, 0.7);
+  box-shadow:
+    0 0 0 5px var(--paper),
+    0 0 0 6px rgba(164, 128, 63, 0.22),
+    0 24px 44px -28px rgba(74, 40, 18, 0.5);
+}
+
+.family-card__photo {
+  aspect-ratio: 1;
+  border-radius: 50%;
+}
+
+.family-card__photo img {
+  transition: transform 1.2s var(--ease-out);
+}
+
+.family-card:hover .family-card__photo img {
+  transform: scale(1.05);
+}
+
+/* Gold ring that draws around the portrait */
+.family-card__ring,
+.family-card__garland {
+  max-width: none;
+}
+
+.family-card__ring {
+  position: absolute;
+  inset: -1px;
+  width: calc(100% + 2px);
+  height: calc(100% + 2px);
+  rotate: -90deg;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.family-card--groom .family-card__ring {
+  transform: scaleY(-1); /* draws the other way round */
+}
+
+.family-card__ring circle {
+  fill: none;
+  stroke: var(--gold);
+  stroke-width: 0.6;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 1.6s var(--ease-soft) calc(var(--d, 0s) + 0.6s);
+}
+
+.family-card[data-inview='true'] .family-card__ring circle {
+  stroke-dashoffset: 0;
+}
+
+/* Jasmine garland strung bud by bud, then turning slowly */
+.family-card__garland {
+  position: absolute;
+  inset: -26px;
+  width: calc(100% + 52px);
+  height: calc(100% + 52px);
+  overflow: visible;
+  pointer-events: none;
+  filter: drop-shadow(0 2px 2px rgba(90, 60, 25, 0.18));
+  animation: garland-turn 150s linear infinite;
+  animation-play-state: paused;
+}
+
+.family-card--groom .family-card__garland {
+  animation-direction: reverse;
+}
+
+.garland__bud {
+  opacity: 0;
+  scale: 0.2;
+  transform-box: fill-box;
+  transform-origin: center;
+  transition:
+    opacity 0.5s ease calc(var(--d, 0s) + 1.1s + var(--i) * 0.035s),
+    scale 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) calc(var(--d, 0s) + 1.1s + var(--i) * 0.035s);
+}
+
+.family-card[data-inview='true'] .garland__bud {
+  opacity: 1;
+  scale: 1;
+}
+
+/* Card text arrives line by line */
+.family-card__role { --k: 0; }
+.family-card__name { --k: 1; }
+.family-card__flourish { --k: 2; }
+.family-card__relation { --k: 3; }
+.family-card__parents { --k: 4; }
+.family-card__relation--grand { --k: 5; }
+.family-card__grand { --k: 6; }
+
+.family-card :is(.family-card__role, .family-card__name, .family-card__relation, .family-card__parents, .family-card__grand) {
+  opacity: 0;
+  translate: 0 14px;
+  transition:
+    opacity 0.9s var(--ease-out) calc(var(--d, 0s) + 0.8s + var(--k) * 0.1s),
+    translate 0.9s var(--ease-out) calc(var(--d, 0s) + 0.8s + var(--k) * 0.1s);
+}
+
+.family-card[data-inview='true'] :is(.family-card__role, .family-card__name, .family-card__relation, .family-card__parents, .family-card__grand) {
+  translate: 0 0;
+}
+
+.family-card[data-inview='true'] :is(.family-card__role, .family-card__name, .family-card__parents, .family-card__grand) {
+  opacity: 1;
+}
+
+.family-card[data-inview='true'] .family-card__relation {
+  opacity: 0.85;
+}
+
+.family-card__role {
+  margin-top: 44px;
+  padding-left: 0.32em;
+  font-family: var(--font-caps);
+  font-size: 0.7rem;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--gold-text);
+}
+
+.family-card__name {
+  margin-top: 6px;
+  font-family: var(--font-display);
+  font-size: clamp(2.3rem, 7vw, 2.9rem);
+  font-weight: 500;
+  line-height: 1.1;
+  color: var(--maroon);
+}
+
+.family-card__flourish {
+  display: block;
+  width: 110px;
+  height: auto;
+  margin-top: 6px;
+  overflow: visible;
+}
+
+.family-card__flourish path {
+  stroke: var(--gold);
+  stroke-width: 1;
+  stroke-linecap: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 1.4s var(--ease-soft) calc(var(--d, 0s) + 1.1s);
+}
+
+.family-card[data-inview='true'] .family-card__flourish path {
+  stroke-dashoffset: 0;
+}
+
+.family-card__relation {
+  margin-top: 12px;
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-style: italic;
+  color: var(--text-brown);
+}
+
+.family-card__relation--grand {
+  margin-top: 16px;
+}
+
+.family-card__parents {
+  margin-top: 2px;
+  font-family: var(--font-display);
+  font-size: clamp(1.25rem, 3.8vw, 1.4rem);
+  font-weight: 500;
+  line-height: 1.35;
+  color: var(--ink-soft);
+  text-wrap: balance;
+}
+
+.family-card__grand {
+  margin-top: 2px;
+  font-family: var(--font-display);
+  font-size: 1.12rem;
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--text-brown);
+  text-wrap: balance;
+}
+
+/* ---------- The union: gold links meet at the "&" ---------- */
+
+.family__union {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.family__link {
+  display: block;
+  width: 1px;
+  height: 34px;
+  background: linear-gradient(180deg, rgba(164, 128, 63, 0.15), var(--gold));
+  transform: scaleY(0);
+  transform-origin: top center;
+  transition: transform 1s var(--ease-out) calc(var(--d, 0s) + 1s);
+}
+
+.family__link--b {
+  background: linear-gradient(0deg, rgba(164, 128, 63, 0.15), var(--gold));
+  transform-origin: bottom center;
+}
+
+.family__union[data-inview='true'] .family__link {
+  transform: scale(1);
+}
+
+.family__amp {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 66px;
+  height: 66px;
+  margin: 6px;
+  border-radius: 50%;
+  border: 1px solid var(--gold);
+  background: radial-gradient(circle at 50% 35%, #fffaf0, var(--cream));
+  box-shadow: 0 0 0 5px rgba(201, 162, 94, 0.12);
+  opacity: 0;
+  scale: 0.2;
+  transition:
+    opacity 0.4s ease calc(var(--d, 0s) + 1.7s),
+    scale 1s cubic-bezier(0.34, 1.56, 0.64, 1) calc(var(--d, 0s) + 1.7s);
+  animation: amp-glow 4.5s ease-in-out 3s infinite;
+  animation-play-state: paused;
+}
+
+.family__union[data-inview='true'] .family__amp {
+  opacity: 1;
+  scale: 1;
+}
+
+.family__amp-char {
+  font-family: var(--font-display);
+  font-size: 2.05rem;
+  font-style: italic;
+  line-height: 1;
+  color: var(--gold-deep);
+  transform: translateY(-2px);
+}
+
+.family__ripple {
+  position: absolute;
+  inset: -1px;
+  border: 1px solid var(--gold);
+  border-radius: 50%;
+  opacity: 0;
+  animation: union-ripple 6s ease-out 2.2s infinite;
+  animation-play-state: paused;
+  pointer-events: none;
+}
+
+.family__ripple--late {
+  animation-delay: 2.8s;
+}
+
+/* ---------- Closing note ---------- */
+
+.family__closing {
+  position: relative;
+  max-width: 40rem;
+  margin: clamp(64px, 8vw, 96px) auto 0;
+  text-align: center;
+}
+
+.family__note {
+  margin-top: 22px;
+  font-family: var(--font-display);
+  font-size: clamp(1.2rem, 3.6vw, 1.45rem);
+  font-style: italic;
+  line-height: 1.65;
+  color: var(--ink-soft);
+  text-wrap: balance;
+}
+
+/* The blessing is read word by word */
+.family__note span {
+  opacity: 0;
+  filter: blur(4px);
+  transition:
+    opacity 0.8s ease calc(0.5s + var(--w) * 0.06s),
+    filter 0.8s ease calc(0.5s + var(--w) * 0.06s);
+}
+
+.family__closing[data-inview='true'] .family__note span {
+  opacity: 1;
+  filter: blur(0);
+}
+
+.family__signature {
+  margin-top: 18px;
+  padding-left: 0.24em;
+  font-family: var(--font-caps);
+  font-size: 0.72rem;
+  letter-spacing: 0.6em;
+  text-transform: uppercase;
+  color: var(--maroon);
+  opacity: 0;
+  transition:
+    opacity 1.2s ease 1.9s,
+    letter-spacing 1.8s var(--ease-out) 1.9s;
+}
+
+.family__closing[data-inview='true'] .family__signature {
+  opacity: 1;
+  letter-spacing: 0.24em;
+}
+
+.family__jasmine {
+  position: absolute;
+  right: -40px;
+  bottom: -56px;
+  width: 120px;
+  height: auto;
+  transform: scaleX(-1) rotate(-10deg);
+  transform-origin: 90% 90%;
+  opacity: 0;
+  transition: opacity 1.2s ease 2.2s;
+  animation: family-sway 6s ease-in-out infinite alternate;
+  animation-play-state: paused;
+}
+
+.family__closing[data-inview='true'] .family__jasmine {
+  opacity: 0.9;
+}
+
+@media (max-width: 719px) {
+  .family__jasmine {
+    display: none;
+  }
+}
+
+/* ---------- Desktop: side by side, links run horizontally ---------- */
+
+@media (min-width: 860px) {
+  .family__grid {
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    align-items: start;
+    column-gap: 0;
+  }
+
+  .family__union {
+    flex-direction: row;
+    /* align the "&" with the centre of the portraits */
+    margin-top: calc(196px / 2 - 39px);
+  }
+
+  .family__link {
+    width: clamp(28px, 4vw, 72px);
+    height: 1px;
+    background: linear-gradient(90deg, rgba(164, 128, 63, 0.15), var(--gold));
+    transform: scaleX(0);
+    transform-origin: left center;
+  }
+
+  .family__link--b {
+    background: linear-gradient(270deg, rgba(164, 128, 63, 0.15), var(--gold));
+    transform-origin: right center;
+  }
+}
+
+/* ---------- Keyframes ---------- */
+
+@keyframes family-drift {
+  from { transform: scale(1) translate3d(0, 0, 0); }
+  to { transform: scale(1.08) translate3d(-1.5%, -2%, 0); }
+}
+
+@keyframes shower-fall {
+  0% { opacity: 0; translate: 0 0; }
+  8% { opacity: 0.75; }
+  88% { opacity: 0.6; }
+  100% { opacity: 0; translate: 30px 105cqh; }
+}
+
+@keyframes shower-sway {
+  from { transform: translateX(-10px) rotate(-30deg); }
+  to { transform: translateX(10px) rotate(40deg); }
+}
+
+@keyframes garland-turn {
+  to { rotate: 360deg; }
+}
+
+@keyframes amp-glow {
+  0%, 100% { box-shadow: 0 0 0 5px rgba(201, 162, 94, 0.12); }
+  50% { box-shadow: 0 0 0 5px rgba(201, 162, 94, 0.2), 0 0 30px 6px rgba(230, 190, 110, 0.35); }
+}
+
+@keyframes union-ripple {
+  0% { opacity: 0; transform: scale(1); }
+  4% { opacity: 0.7; }
+  30%, 100% { opacity: 0; transform: scale(2.2); }
+}
+
+@keyframes family-sway {
+  from { rotate: -4deg; }
+  to { rotate: 4deg; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .family__shower,
+  .family__ripple {
+    display: none;
+  }
+}
